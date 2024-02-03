@@ -1,4 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://cu60dn4y4cdhm"]
+[gd_scene load_steps=14 format=3 uid="uid://cu60dn4y4cdhm"]
+
+[ext_resource type="PackedScene" uid="uid://chm1pkq2drvji" path="res://scenes/Player.tscn" id="1_y0ftv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l0c77"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -99,3 +101,12 @@ mesh = SubResource("BoxMesh_gobgw")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Pillar_5/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_114vl")
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("1_y0ftv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.30461, 2.13796, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.699663, 0.714473, 0, -0.714473, 0.699663, 0, 9.0512, 0)
+light_energy = 1.355
+light_indirect_energy = 5.364
+shadow_enabled = true

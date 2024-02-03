@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://chm1pkq2drvji"]
+
+[ext_resource type="Script" path="res://scenes/Player.gd" id="1_4prf3"]
+[ext_resource type="PackedScene" uid="uid://dk8be3b72qrh5" path="res://scenes/hitPointer.tscn" id="1_xqes8"]
+[ext_resource type="Script" path="res://scenes/Head.gd" id="3_wqeff"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yh66g"]
+
+[node name="CharacterBody3D" type="CharacterBody3D"]
+script = ExtResource("1_4prf3")
+
+[node name="Control" parent="." instance=ExtResource("1_xqes8")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_yh66g")
+
+[node name="Head" type="Node3D" parent="."]
+script = ExtResource("3_wqeff")
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+
+[node name="GroundCheckRay" type="RayCast3D" parent="."]
+target_position = Vector3(0, -1.1, 0)
