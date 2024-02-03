@@ -7,6 +7,7 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yh66g"]
 
 [node name="CharacterBody3D" type="CharacterBody3D"]
+collision_layer = 2
 script = ExtResource("1_4prf3")
 
 [node name="Control" parent="." instance=ExtResource("1_xqes8")]
