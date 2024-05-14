@@ -4,9 +4,10 @@ extends CharacterBody3D
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
 const SWING_SPEED = 5
-const MAX_FALLING_WALK_SPEED =6
+const MAX_FALLING_WALK_SPEED =.1
 @onready var Head = $"Head"
 @onready var camera = $"Head/Camera3D"
+@onready var rope = $"Head/Camera3D/Rope"
 @onready var prev_pos = transform.origin
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -62,18 +63,17 @@ func _physics_process(delta):
 		if RayCast.size() > 0:
 			grappling = true
 			grapple_anchor = RayCast.position
+			rope.StartedGrappling(grapple_anchor)
 
 	#move player as grappling
-	if grappling or not is_on_floor():
-		var alignment = direction.dot(Vector3(velocity.x,0,velocity.z).normalized())
-		var speed_modifier = max(.5,alignment) * 1.1
+	if grappling:
 		var total_forces = direction * SWING_SPEED
 		if not GroundCheckRay.is_colliding():
 			total_forces += Vector3(0,-gravity,0)
 		var new_pos = verletIntegration(prev_pos,total_forces,delta)
-		if grappling:
-			var rope_length = transform.origin.distance_to(grapple_anchor)
-			new_pos = constrain_rope(new_pos, rope_length)
+
+		var rope_length = transform.origin.distance_to(grapple_anchor)
+		new_pos = constrain_rope(new_pos, rope_length)
 		var nextVelocity = new_pos - transform.origin
 		
 		velocity = (new_pos - transform.origin) / delta
@@ -81,8 +81,9 @@ func _physics_process(delta):
 		prev_pos = transform.origin
 		move_and_slide()
 	else:
+		rope.UnGrapple()
 		if not is_on_floor():
-			"""
+			
 			var alignment = direction.dot(Vector3(velocity.x,0,velocity.z).normalized())
 			var speed_modifier = max(.5,alignment) * 1.1
 			var total_forces = direction * SWING_SPEED * speed_modifier
@@ -96,18 +97,17 @@ func _physics_process(delta):
 			
 			prev_pos = transform.origin
 			move_and_slide()
-			"""
-		
-			velocity.y -= gravity * delta
 
-			velocity.x += direction.x * SPEED
-			velocity.z += direction.z * SPEED
+			"""
+			velocity.y -= gravity * delta
+			velocity.x += direction.x * MAX_FALLING_WALK_SPEED
+			velocity.z += direction.z * MAX_FALLING_WALK_SPEED
 			# Store the current position
 			prev_pos = transform.origin
 
 			#Move the character and handle collisions
 			move_and_slide()
-
+"""
 		else:
 			velocity.x = direction.x * SPEED
 			velocity.z = direction.z * SPEED

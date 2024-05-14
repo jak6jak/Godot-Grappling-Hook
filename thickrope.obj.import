@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bdiii7ff40apm"
+path="res://.godot/imported/thickrope.obj-45581d0fab97b9b72f27acb28c5108be.mesh"
+
+[deps]
+
+files=["res://.godot/imported/thickrope.obj-45581d0fab97b9b72f27acb28c5108be.mesh"]
+
+source_file="res://thickrope.obj"
+dest_files=["res://.godot/imported/thickrope.obj-45581d0fab97b9b72f27acb28c5108be.mesh", "res://.godot/imported/thickrope.obj-45581d0fab97b9b72f27acb28c5108be.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false
