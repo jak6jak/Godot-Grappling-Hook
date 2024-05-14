@@ -26,7 +26,9 @@ func _input(event):
 
 func verletIntegration(prev_pos: Vector3, forces: Vector3, delta: float):
 	var accel = forces # 1.0 is the mass of the player
-	return 2 * transform.origin - prev_pos + accel * pow(delta,2)
+	var new_pos =  2 * transform.origin - prev_pos + accel * pow(delta,2)
+	return new_pos
+	
 
 func constrain_rope(pos : Vector3, max_rope_length: float):
 	var rope_vector = pos - grapple_anchor
@@ -62,31 +64,50 @@ func _physics_process(delta):
 			grapple_anchor = RayCast.position
 
 	#move player as grappling
-	if grappling:
+	if grappling or not is_on_floor():
+		var alignment = direction.dot(Vector3(velocity.x,0,velocity.z).normalized())
+		var speed_modifier = max(.5,alignment) * 1.1
 		var total_forces = direction * SWING_SPEED
 		if not GroundCheckRay.is_colliding():
 			total_forces += Vector3(0,-gravity,0)
 		var new_pos = verletIntegration(prev_pos,total_forces,delta)
-		var rope_length = transform.origin.distance_to(grapple_anchor)
-		new_pos = constrain_rope(new_pos, rope_length)
+		if grappling:
+			var rope_length = transform.origin.distance_to(grapple_anchor)
+			new_pos = constrain_rope(new_pos, rope_length)
+		var nextVelocity = new_pos - transform.origin
+		
 		velocity = (new_pos - transform.origin) / delta
 		
 		prev_pos = transform.origin
 		move_and_slide()
 	else:
 		if not is_on_floor():
-			velocity.y -= gravity * delta
-			var falling_movement = direction * SPEED
-			falling_movement += Vector3.UP * velocity.y
-			var deltaVelocity = falling_movement - velocity
-			var accel = deltaVelocity
-			var limit_velocity = 2 if accel.dot(velocity) > 0 else 1
-			if accel.length() > limit_velocity:
-				accel = accel.normalized() * limit_velocity
-			velocity += deltaVelocity
+			"""
+			var alignment = direction.dot(Vector3(velocity.x,0,velocity.z).normalized())
+			var speed_modifier = max(.5,alignment) * 1.1
+			var total_forces = direction * SWING_SPEED * speed_modifier
+			if not GroundCheckRay.is_colliding():
+				total_forces += Vector3(0,-gravity,0)
+			var new_pos = verletIntegration(prev_pos,total_forces,delta)
+			
+			var nextVelocity = new_pos - transform.origin
+		
+			velocity = (new_pos - transform.origin) / delta
+			
 			prev_pos = transform.origin
 			move_and_slide()
-			
+			"""
+		
+			velocity.y -= gravity * delta
+
+			velocity.x += direction.x * SPEED
+			velocity.z += direction.z * SPEED
+			# Store the current position
+			prev_pos = transform.origin
+
+			#Move the character and handle collisions
+			move_and_slide()
+
 		else:
 			velocity.x = direction.x * SPEED
 			velocity.z = direction.z * SPEED
